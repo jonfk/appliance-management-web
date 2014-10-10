@@ -1,0 +1,21 @@
+<h1>Update Server settings</h1>
+
+<form action="/save/update" method="POST">
+  <div>
+    Current Group: {{printf "%s" .Group}}
+  </div>
+  <div>
+   Select Group:
+   <select name="group">
+     <option value="alpha">alpha</option>
+     <option value="beta">beta</option>
+     <option value="stable">stable</option>
+   </select>
+  </div>
+  <div>
+    Update Server: <input type="text" name="server" value={{printf "%s" .Server}}>
+  </div>
+  <div>
+    <input type="submit" value="Save">
+    <input type="button" onClick="history.go(0)" value="Cancel"></div>
+</form>

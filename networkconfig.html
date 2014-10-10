@@ -1,0 +1,16 @@
+<h1>Network settings Configuration</h1>
+
+<form action="/save/network" method="POST">
+  <div>
+    DNS: <input type="text" name="dns" value={{printf "%s" .Dns}}>
+  </div>
+  <div>
+    Address: <input type="text" name="address" value={{printf "%s" .Address}}>
+  </div>
+  <div>
+    Gateway: <input type="text" name="gateway" value={{printf "%s" .Gateway}}>
+  </div>
+  <div>
+    <input type="submit" value="Save">
+    <input type="button" onClick="history.go(0)" value="Cancel"></div>
+</form>

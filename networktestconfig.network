@@ -1,0 +1,7 @@
+[Match]
+Name=enp2s0
+
+[Network]
+DNS=88787878
+Address=87878
+Gateway=878787

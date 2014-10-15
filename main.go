@@ -5,10 +5,17 @@ Copyright Inocybe Technlogies, 2014. All rights reserved.
 package main
 
 import (
+	"os"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
 )
+
+type Configuration struct {
+	Port string
+	TemplatesPath string
+}
 
 type WelcomePage struct {
 	Pages []string
@@ -31,6 +38,8 @@ func check(err error) {
     }
 }
 
+var configuration Configuration
+
 
 /* Welcome */
 
@@ -40,16 +49,6 @@ func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "welcome", p)
 }
 
-/* Templates */
-
-var templates = template.Must(template.ParseFiles("templates/welcome.html", "templates/updateserver.html", "templates/networkconfig.html", "templates/cloudconfig.html", "templates/textcloudconfig.html"))
-
-func renderTemplate(w http.ResponseWriter, tmpl string, p interface{}) {
-	err := templates.ExecuteTemplate(w, tmpl+".html", p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
 
 func main() {
 	http.HandleFunc("/", welcomeHandler)
@@ -60,6 +59,26 @@ func main() {
 	http.HandleFunc("/cloudconfig", cloudConfigHandler)
 	http.HandleFunc("/save/cloudconfig", saveCloudConfigHandler)
 
+	file, _ := os.Open("conf/conf.json")
+	decoder := json.NewDecoder(file)
+	configuration = Configuration{}
+	err := decoder.Decode(&configuration)
+	check(err)
 
-	http.ListenAndServe(":8080", nil)
+	log.Printf("Starting appliance-management-web with configuration: %#v\n",configuration)
+
+	http.ListenAndServe("0.0.0.0:"+configuration.Port, nil)
+}
+
+/* Templates */
+
+var templatesPath string = "/usr/share/appliance-manager/templates/"
+
+var templates = template.Must(template.ParseFiles(templatesPath + "welcome.html", templatesPath+"updateserver.html", templatesPath+"networkconfig.html", templatesPath+"cloudconfig.html", templatesPath+"textcloudconfig.html"))
+
+func renderTemplate(w http.ResponseWriter, tmpl string, p interface{}) {
+	err := templates.ExecuteTemplate(w, tmpl+".html", p)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

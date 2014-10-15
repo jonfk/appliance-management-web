@@ -1,0 +1,23 @@
+#cloud-config
+
+coreos:
+    units:
+      - name: opendaylight-dist.service
+        enable: true
+        runtime: true
+        command: start
+      - name: user.service
+        enable: true
+        runtime: true
+        command: start
+        content: |
+          [Unit]
+          Description=User cloud-config
+          Author=jonathan Fok kan <jfokkan@inocybe.com>
+          Requires=dbus.service
+          After=dbus.service
+
+          [Service]
+          Type=oneshot
+          RemainAfterExit=yes
+          ExecStart=/usr/bin/coreos-cloudinit --from-file=/usr/share/oem/user/cloud-config.yml

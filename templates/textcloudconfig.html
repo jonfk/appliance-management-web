@@ -1,6 +1,11 @@
 <h1>Cloud-Config settings</h1>
 
+<form action="/save/cloudconfig" method="POST">
+<div><textarea name="thisismystuff" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
+<div><input type="submit" value="Save"></div>
+</form>
 
+<!--
 <form action="/save/cloudconfig" method="POST">
 <div><textarea name="body" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
 <div>
@@ -8,3 +13,4 @@
   <input type="button" onClick="history.go(0)" value="Cancel">
 </div>
 </form>
+-->

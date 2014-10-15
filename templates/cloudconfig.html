@@ -1,0 +1,20 @@
+<html>
+<head>
+  <title>Upload cloud-config file</title>
+</head>
+<body>
+  <h1>Cloud-config Upload</h1>
+  <div>
+    <h3>Current Cloud-Config file</h3>
+    {{.Body}}
+  </div>
+  <br><br>
+  <div>
+  <form enctype="multipart/form-data" action="/save/cloudconfig" method="post">
+    <input type="file" name="uploadfile" />
+    <!--<input type="hidden" name="token" value="{{.}}"/>-->
+    <input type="submit" value="upload" />
+  </form>
+  </div>
+</body>
+</html>

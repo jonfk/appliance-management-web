@@ -32,7 +32,7 @@ func loadCloudConfig() (*CloudConfigPage, error){
 	safe := template.HTMLEscapeString(string(body))
 	newbody := strings.Replace(safe, "\n", "<br>", -1)
 
-	return &CloudConfigPage{template.HTML(newbody)}, nil
+	return &CloudConfigPage{newbody}, nil
 }
 
 func allinonecloudConfigHandler(w http.ResponseWriter, r *http.Request) {

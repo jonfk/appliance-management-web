@@ -59,6 +59,7 @@ func main() {
 	http.HandleFunc("/cloudconfig", cloudConfigHandler)
 	http.HandleFunc("/save/cloudconfig", saveCloudConfigHandler)
 
+	/*
 	file, _ := os.Open("conf/conf.json")
 	decoder := json.NewDecoder(file)
 	configuration = Configuration{}
@@ -66,8 +67,9 @@ func main() {
 	check(err)
 
 	log.Printf("Starting appliance-management-web with configuration: %#v\n",configuration)
+*/
 
-	http.ListenAndServe("0.0.0.0:"+configuration.Port, nil)
+	http.ListenAndServe("0.0.0.0:8080", nil)
 }
 
 /* Templates */

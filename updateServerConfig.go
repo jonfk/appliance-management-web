@@ -10,11 +10,6 @@ import (
 
 /* Update Server Configuration */
 
-// TODO change to "/etc/coreos/update.conf"
-//"/usr/share/coreos/update.conf"
-//"/usr/share/coreos/release"
-var serverConfigFilename string = "testconf/testconfig.conf"
-
 func loadUpdateServerConfig() (*ServerPage, error){
 	body, err := ioutil.ReadFile(serverConfigFilename)
 	if err != nil {

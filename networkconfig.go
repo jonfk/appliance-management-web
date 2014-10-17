@@ -8,8 +8,6 @@ import (
 )
 
 /* Network Configuration */
-// TODO change to "/etc/systemd/network/static.network"
-var networkConfigFilename string = "testconf/networktestconfig.network"
 
 func writeNetworkConfig(page *NetworkPage) {
 	var body bytes.Buffer

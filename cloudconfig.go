@@ -20,8 +20,6 @@ type CloudConfigPage struct {
 
 /* cloud-config upload */
 
-var cloudconfigFilename string = "testconf/cloud-config.yml"
-
 func loadCloudConfig() (*CloudConfigPage, error){
 	body, err := ioutil.ReadFile(cloudconfigFilename)
 	if err != nil {

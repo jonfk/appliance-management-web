@@ -10,12 +10,9 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"flag"
+	"strconv"
 )
-
-type Configuration struct {
-	Port string
-	TemplatesPath string
-}
 
 type WelcomePage struct {
 	Pages []string
@@ -38,8 +35,22 @@ func check(err error) {
     }
 }
 
-var configuration Configuration
+/* Flags */
+var port int
 
+var test bool
+
+func init() {
+	flag.IntVar(&port, "port", 8080, "set port to serve web app")
+	flag.BoolVar(&test, "test", false, "set app to testing mode")
+}
+
+/* config files to modify */
+var cloudconfigFilename string = "testconf/cloud-config.yml"
+// TODO change to "/etc/systemd/network/static.network"
+var networkConfigFilename string = "testconf/networktestconfig.network"
+// TODO change to "/etc/coreos/update.conf"
+var serverConfigFilename string = "testconf/testconfig.conf"
 
 /* Welcome */
 
@@ -51,32 +62,43 @@ func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
+	flag.Parse()
+
 	http.HandleFunc("/", welcomeHandler)
 	http.HandleFunc("/update/", updateHandler)
 	http.HandleFunc("/save/update", saveUpdateHandler)
 	http.HandleFunc("/network/", networkHandler)
 	http.HandleFunc("/save/network", saveNetworkHandler)
-	http.HandleFunc("/cloudconfig", cloudConfigHandler)
+	http.HandleFunc("/cloudconfig/", cloudConfigHandler)
 	http.HandleFunc("/save/cloudconfig", saveCloudConfigHandler)
 
-	/*
-	file, _ := os.Open("conf/conf.json")
-	decoder := json.NewDecoder(file)
-	configuration = Configuration{}
-	err := decoder.Decode(&configuration)
-	check(err)
+	/* Templates */
+	var templatesPath string = "/usr/share/appliance-manager/templates/"
 
-	log.Printf("Starting appliance-management-web with configuration: %#v\n",configuration)
-*/
+	if test {
+		log.Println("Testing mode")
+		templatesPath = "templates/"
 
-	http.ListenAndServe("0.0.0.0:8080", nil)
+		cloudconfigFilename = "testconf/cloud-config.yml"
+		networkConfigFilename = "testconf/networktestconfig.network"
+		serverConfigFilename = "testconf/testconfig.conf"
+	} else {
+		cloudconfigFilename = "/var/lib/coreos-install/user_data"
+		networkConfigFilename = "/etc/systemd/network/static.network"
+		serverConfigFilename = "/etc/coreos/update.conf"
+	}
+	log.Printf("Config files modified: \n%s\n%s\n%s", cloudconfigFilename, networkConfigFilename, serverConfigFilename)
+
+	templates = template.Must(template.ParseFiles(templatesPath + "welcome.html", templatesPath+"updateserver.html", templatesPath+"networkconfig.html", templatesPath+"cloudconfig.html", templatesPath+"textcloudconfig.html"))
+
+	addr := "0.0.0.0:" + strconv.Itoa(port)
+	log.Println("Listening on : " + addr)
+	http.ListenAndServe(addr , nil)
 }
 
-/* Templates */
 
-var templatesPath string = "/usr/share/appliance-manager/templates/"
 
-var templates = template.Must(template.ParseFiles(templatesPath + "welcome.html", templatesPath+"updateserver.html", templatesPath+"networkconfig.html", templatesPath+"cloudconfig.html", templatesPath+"textcloudconfig.html"))
+var templates *template.Template
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p interface{}) {
 	err := templates.ExecuteTemplate(w, tmpl+".html", p)

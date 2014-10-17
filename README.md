@@ -9,7 +9,6 @@ To build
 --------
 ./build
 
-Modifications for testing locally
----------------------------------
-
-change var templates
+To test
+-------
+appliance-management-web -test
